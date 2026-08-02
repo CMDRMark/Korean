@@ -212,6 +212,17 @@
       padding: 14px 22px;
     }
 
+    #nextButton {
+      display: none;
+      width: 100%;
+      margin-top: 14px;
+      background: var(--accent-dark);
+    }
+
+    #nextButton.show {
+      display: block;
+    }
+
     @media (max-width: 520px) {
       body { padding: 12px; }
       .topbar { align-items: flex-start; }
@@ -254,6 +265,7 @@
 
         <div class="translation" id="translation"></div>
         <div class="feedback" id="feedback"></div>
+        <button id="nextButton" type="button">Далее</button>
 
         <div class="help">
           Команды: <code>перевод</code> — показать перевод, <code>stop</code> —
@@ -408,6 +420,7 @@
     var restartEl = document.getElementById("restart");
     var jsStatusEl = document.getElementById("jsStatus");
     var checkButtonEl = document.getElementById("checkButton");
+    var nextButtonEl = document.getElementById("nextButton");
 
     var current = null;
     var lastIndex = -1;
@@ -416,6 +429,7 @@
     var correctQuestions = 0;
     var firstTryCorrect = 0;
     var locked = false;
+    var awaitingNext = false;
 
     function cleanText(text) {
       return String(text || "")
@@ -436,6 +450,17 @@
       translationEl.innerHTML = "";
     }
 
+    function showNextButton() {
+      awaitingNext = true;
+      nextButtonEl.className = "show";
+      try { nextButtonEl.focus(); } catch (e) {}
+    }
+
+    function hideNextButton() {
+      awaitingNext = false;
+      nextButtonEl.className = "";
+    }
+
     function updateScore() {
       scoreEl.innerHTML = "Правильно: " + correctQuestions + " / " + totalQuestions;
     }
@@ -450,6 +475,7 @@
       current = exercises[index];
       wrongAttempts = 0;
       locked = false;
+      hideNextButton();
 
       sentenceEl.innerHTML = current.sentence;
       dictionaryEl.innerHTML = current.base + " — " + current.meaning;
@@ -463,6 +489,7 @@
 
     function finishExercise() {
       locked = true;
+      hideNextButton();
       exerciseEl.style.display = "none";
       summaryEl.className = "summary show";
       finalScoreEl.innerHTML = correctQuestions + " / " + totalQuestions;
@@ -477,13 +504,20 @@
         "С первой попытки: <strong>" + firstTryCorrect + "</strong>.";
     }
 
-    function unlockAndNext(delay) {
-      window.setTimeout(function () {
-        chooseExercise();
-      }, delay);
+    function revealAndWait(type, html) {
+      locked = true;
+      answerEl.disabled = true;
+      checkButtonEl.disabled = true;
+      setFeedback(type, html);
+      showNextButton();
     }
 
     function checkAnswer() {
+      if (awaitingNext) {
+        chooseExercise();
+        return false;
+      }
+
       if (locked || !current) return false;
 
       var raw = answerEl.value || "";
@@ -512,11 +546,10 @@
         correctQuestions += 1;
         if (wrongAttempts === 0) firstTryCorrect += 1;
         updateScore();
-        setFeedback("ok", "Верно: <strong>" + current.answer + "</strong>");
-        locked = true;
-        answerEl.disabled = true;
-        checkButtonEl.disabled = true;
-        unlockAndNext(700);
+        revealAndWait(
+          "ok",
+          "Верно: <strong>" + current.answer + "</strong><br>" + current.explanation
+        );
         return false;
       }
 
@@ -529,14 +562,10 @@
       } else {
         totalQuestions += 1;
         updateScore();
-        setFeedback(
+        revealAndWait(
           "bad",
           "Правильный ответ: <strong>" + current.answer + "</strong><br>" + current.explanation
         );
-        locked = true;
-        answerEl.disabled = true;
-        checkButtonEl.disabled = true;
-        unlockAndNext(1800);
       }
 
       return false;
@@ -561,12 +590,30 @@
       return false;
     };
 
+    nextButtonEl.onclick = function () {
+      if (awaitingNext) chooseExercise();
+      return false;
+    };
+
+    nextButtonEl.onkeydown = function (event) {
+      event = event || window.event;
+      var key = event.key || event.keyCode;
+
+      if ((key === "Enter" || key === 13) && awaitingNext) {
+        if (event.preventDefault) event.preventDefault();
+        event.returnValue = false;
+        chooseExercise();
+        return false;
+      }
+    };
+
     restartEl.onclick = function () {
       totalQuestions = 0;
       correctQuestions = 0;
       firstTryCorrect = 0;
       lastIndex = -1;
       locked = false;
+      hideNextButton();
       updateScore();
       summaryEl.className = "summary";
       exerciseEl.style.display = "block";
