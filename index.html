@@ -223,6 +223,17 @@
       display: block;
     }
 
+    #translateButton {
+      width: 100%;
+      margin-top: 10px;
+      color: var(--accent-dark);
+      background: #f1edff;
+    }
+
+    #translateButton:hover {
+      background: #e7e0ff;
+    }
+
     @media (max-width: 520px) {
       body { padding: 12px; }
       .topbar { align-items: flex-start; }
@@ -257,19 +268,21 @@
             autocapitalize="off"
             autocomplete="off"
             spellcheck="false"
-            placeholder="Например: 살아요"
+            placeholder=""
             aria-label="Ответ"
           />
           <button id="checkButton" type="button" onclick="checkAnswer()">Проверить</button>
         </div>
+        <button id="translateButton" type="button">Перевод</button>
 
         <div class="translation" id="translation"></div>
         <div class="feedback" id="feedback"></div>
         <button id="nextButton" type="button">Далее</button>
 
         <div class="help">
-          Команды: <code>перевод</code> — показать перевод, <code>stop</code> —
-          закончить упражнение и увидеть результат. Перевод не считается попыткой.
+          Кнопка <code>Перевод</code> показывает перевод предложения.
+          Команда <code>stop</code> — закончить упражнение и увидеть результат.
+          Перевод не считается попыткой.
         </div>
       </div>
 
@@ -292,12 +305,12 @@
       { sentence: "친구가 책을 ____.", base: "읽다", meaning: "читать", answer: "읽어요", translation: "Друг читает книгу.", explanation: "읽다 → последняя гласная ㅣ, поэтому -어요: 읽어요." },
       { sentence: "저는 한국어를 ____.", base: "공부하다", meaning: "учить, изучать", answer: "공부해요", translation: "Я изучаю корейский язык.", explanation: "하다 обычно меняется на 해요: 공부해요." },
       { sentence: "주말에 영화를 ____.", base: "보다", meaning: "смотреть", answer: "봐요", translation: "На выходных я смотрю фильм.", explanation: "보다 → 보 + 아요 сокращается до 봐요." },
-      { sentence: "저는 음악을 자주 ____.", base: "듣다", meaning: "слушать", answer: "들어요", translation: "Я часто слушаю музыку.", explanation: "듣다 — ㄷ-неправильный глагол: ㄷ меняется на ㄹ перед гласной: 들어요." },
-      { sentence: "이 가방은 아주 ____.", base: "무겁다", meaning: "быть тяжёлым", answer: "무거워요", translation: "Эта сумка очень тяжёлая.", explanation: "무겁다 — ㅂ-неправильное слово: ㅂ исчезает и добавляется 워요: 무거워요." },
-      { sentence: "이 방은 조금 ____.", base: "좁다", meaning: "быть узким", answer: "좁아요", translation: "Эта комната немного узкая.", explanation: "좁다 не относится к ㅂ-исключениям: 좁아요." },
-      { sentence: "오늘은 많이 ____.", base: "춥다", meaning: "быть холодным", answer: "추워요", translation: "Сегодня очень холодно.", explanation: "춥다 — ㅂ-неправильное слово: 추워요." },
-      { sentence: "여름에는 날씨가 ____.", base: "덥다", meaning: "быть жарким", answer: "더워요", translation: "Летом жаркая погода.", explanation: "덥다 — ㅂ-неправильное слово: 더워요." },
-      { sentence: "한국 음식은 조금 ____.", base: "맵다", meaning: "быть острым", answer: "매워요", translation: "Корейская еда немного острая.", explanation: "맵다 — ㅂ-неправильное слово: 매워요." },
+      { sentence: "저는 음악을 자주 ____.", base: "듣다", meaning: "слушать", answer: "들어요", translation: "Я часто слушаю музыку.", explanation: "듣다 → перед гласным окончанием ㄷ меняется на ㄹ: 들어요." },
+      { sentence: "이 가방은 아주 ____.", base: "무겁다", meaning: "быть тяжёлым", answer: "무거워요", translation: "Эта сумка очень тяжёлая.", explanation: "무겁다 → перед гласным окончанием ㅂ меняется на 우, затем -어요: 무거워요." },
+      { sentence: "이 방은 조금 ____.", base: "좁다", meaning: "быть узким", answer: "좁아요", translation: "Эта комната немного узкая.", explanation: "좁다 → ㅂ сохраняется; гласная ㅗ, поэтому -아요: 좁아요." },
+      { sentence: "오늘은 많이 ____.", base: "춥다", meaning: "быть холодным", answer: "추워요", translation: "Сегодня очень холодно.", explanation: "춥다 → перед гласным окончанием ㅂ меняется на 우, затем -어요: 추워요." },
+      { sentence: "여름에는 날씨가 ____.", base: "덥다", meaning: "быть жарким", answer: "더워요", translation: "Летом жаркая погода.", explanation: "덥다 → перед гласным окончанием ㅂ меняется на 우, затем -어요: 더워요." },
+      { sentence: "한국 음식은 조금 ____.", base: "맵다", meaning: "быть острым", answer: "매워요", translation: "Корейская еда немного острая.", explanation: "맵다 → перед гласным окончанием ㅂ меняется на 우, затем -어요: 매워요." },
       { sentence: "저는 매일 일찍 ____.", base: "일어나다", meaning: "вставать", answer: "일어나요", translation: "Я каждый день рано встаю.", explanation: "일어나다 → последняя гласная ㅏ, поэтому -아요: 일어나요." },
       { sentence: "밤 열한 시에 ____.", base: "자다", meaning: "спать", answer: "자요", translation: "Я ложусь спать в одиннадцать вечера.", explanation: "자다 → 자 + 아요 сокращается до 자요." },
       { sentence: "아침에 빵을 ____.", base: "먹다", meaning: "есть", answer: "먹어요", translation: "Утром я ем хлеб.", explanation: "먹다 → последняя гласная ㅓ, поэтому -어요: 먹어요." },
@@ -314,10 +327,10 @@
       { sentence: "친구에게 사진을 ____.", base: "보내다", meaning: "отправлять", answer: "보내요", translation: "Я отправляю другу фотографию.", explanation: "보내다 → 보내 + 어요 сокращается до 보내요." },
       { sentence: "선생님이 질문을 ____.", base: "물어보다", meaning: "спрашивать", answer: "물어봐요", translation: "Учитель задаёт вопрос.", explanation: "물어보다 → 보다 становится 봐요: 물어봐요." },
       { sentence: "저는 그 사람을 잘 ____.", base: "알다", meaning: "знать", answer: "알아요", translation: "Я хорошо знаю этого человека.", explanation: "알다 → гласная ㅏ, поэтому 알아요." },
-      { sentence: "저는 그 단어를 ____.", base: "모르다", meaning: "не знать", answer: "몰라요", translation: "Я не знаю это слово.", explanation: "모르다 — 르-неправильное слово: добавляется ㄹ к предыдущему слогу, 르 → 라: 몰라요." },
-      { sentence: "노래를 같이 ____.", base: "부르다", meaning: "петь", answer: "불러요", translation: "Мы вместе поём песню.", explanation: "부르다 — 르-неправильный глагол: 불러요." },
-      { sentence: "기차가 아주 ____.", base: "빠르다", meaning: "быть быстрым", answer: "빨라요", translation: "Поезд очень быстрый.", explanation: "빠르다 — 르-неправильное слово: 빨라요." },
-      { sentence: "이 신발은 조금 ____.", base: "다르다", meaning: "отличаться", answer: "달라요", translation: "Эта обувь немного отличается.", explanation: "다르다 — 르-неправильное слово: 달라요." },
+      { sentence: "저는 그 단어를 ____.", base: "모르다", meaning: "не знать", answer: "몰라요", translation: "Я не знаю это слово.", explanation: "모르다 → при гласном окончании добавляется ㄹ к предыдущему слогу, 르 → 라: 몰라요." },
+      { sentence: "노래를 같이 ____.", base: "부르다", meaning: "петь", answer: "불러요", translation: "Мы вместе поём песню.", explanation: "부르다 → при гласном окончании добавляется ㄹ к предыдущему слогу, 르 → 러: 불러요." },
+      { sentence: "기차가 아주 ____.", base: "빠르다", meaning: "быть быстрым", answer: "빨라요", translation: "Поезд очень быстрый.", explanation: "빠르다 → при гласном окончании добавляется ㄹ к предыдущему слогу, 르 → 라: 빨라요." },
+      { sentence: "이 신발은 조금 ____.", base: "다르다", meaning: "отличаться", answer: "달라요", translation: "Эта обувь немного отличается.", explanation: "다르다 → при гласном окончании добавляется ㄹ к предыдущему слогу, 르 → 라: 달라요." },
       { sentence: "배가 많이 ____.", base: "고프다", meaning: "быть голодным", answer: "고파요", translation: "Я очень голоден.", explanation: "고프다 → ㅡ выпадает; предыдущая гласная ㅗ, поэтому -아요: 고파요." },
       { sentence: "오늘 정말 ____.", base: "바쁘다", meaning: "быть занятым", answer: "바빠요", translation: "Сегодня я очень занят.", explanation: "바쁘다 → ㅡ выпадает; предыдущая гласная ㅏ, поэтому 바빠요." },
       { sentence: "그 영화가 너무 ____.", base: "슬프다", meaning: "быть грустным", answer: "슬퍼요", translation: "Этот фильм очень грустный.", explanation: "슬프다 → ㅡ выпадает; предыдущая гласная не ㅏ/ㅗ, поэтому 슬퍼요." },
@@ -325,8 +338,8 @@
       { sentence: "머리가 ____.", base: "아프다", meaning: "болеть", answer: "아파요", translation: "У меня болит голова.", explanation: "아프다 → ㅡ выпадает; предыдущая гласная ㅏ, поэтому 아파요." },
       { sentence: "길이 잘 안 ____.", base: "보이다", meaning: "быть видимым", answer: "보여요", translation: "Дорогу плохо видно.", explanation: "보이다 → 이 + 어요 сокращается до 여요: 보여요." },
       { sentence: "사진이 아주 ____.", base: "예쁘다", meaning: "быть красивым", answer: "예뻐요", translation: "Фотография очень красивая.", explanation: "예쁘다 → ㅡ выпадает, поэтому 예뻐요." },
-      { sentence: "이 문제는 너무 ____.", base: "어렵다", meaning: "быть трудным", answer: "어려워요", translation: "Эта задача очень трудная.", explanation: "어렵다 — ㅂ-неправильное слово: 어려워요." },
-      { sentence: "이 문제는 아주 ____.", base: "쉽다", meaning: "быть лёгким", answer: "쉬워요", translation: "Эта задача очень лёгкая.", explanation: "쉽다 — ㅂ-неправильное слово: 쉬워요." },
+      { sentence: "이 문제는 너무 ____.", base: "어렵다", meaning: "быть трудным", answer: "어려워요", translation: "Эта задача очень трудная.", explanation: "어렵다 → перед гласным окончанием ㅂ меняется на 우, затем -어요: 어려워요." },
+      { sentence: "이 문제는 아주 ____.", base: "쉽다", meaning: "быть лёгким", answer: "쉬워요", translation: "Эта задача очень лёгкая.", explanation: "쉽다 → перед гласным окончанием ㅂ меняется на 우, затем -어요: 쉬워요." },
       { sentence: "한국어 수업이 ____.", base: "재미있다", meaning: "быть интересным", answer: "재미있어요", translation: "Урок корейского интересный.", explanation: "재미있다 → последняя гласная ㅣ, поэтому 재미있어요." },
       { sentence: "그 책은 별로 ____.", base: "재미없다", meaning: "быть неинтересным", answer: "재미없어요", translation: "Эта книга не очень интересная.", explanation: "재미없다 → последняя гласная ㅓ, поэтому 재미없어요." },
       { sentence: "교실에 학생이 많이 ____.", base: "있다", meaning: "иметься, находиться", answer: "있어요", translation: "В классе много учеников.", explanation: "있다 → 있어요." },
@@ -336,8 +349,8 @@
       { sentence: "저는 친구와 자주 ____.", base: "이야기하다", meaning: "разговаривать", answer: "이야기해요", translation: "Я часто разговариваю с другом.", explanation: "이야기하다 → 이야기해요." },
       { sentence: "아버지가 신문을 ____.", base: "읽다", meaning: "читать", answer: "읽어요", translation: "Отец читает газету.", explanation: "읽다 → 읽어요." },
       { sentence: "저는 매일 운동을 ____.", base: "하다", meaning: "делать", answer: "해요", translation: "Я каждый день занимаюсь спортом.", explanation: "하다 → 해요." },
-      { sentence: "공원에서 천천히 ____.", base: "걷다", meaning: "ходить пешком", answer: "걸어요", translation: "Я медленно гуляю в парке.", explanation: "걷다 — ㄷ-неправильный глагол: 걸어요." },
-      { sentence: "선생님의 설명을 잘 ____.", base: "듣다", meaning: "слушать", answer: "들어요", translation: "Я внимательно слушаю объяснение учителя.", explanation: "듣다 — ㄷ меняется на ㄹ: 들어요." },
+      { sentence: "공원에서 천천히 ____.", base: "걷다", meaning: "ходить пешком", answer: "걸어요", translation: "Я медленно гуляю в парке.", explanation: "걷다 → перед гласным окончанием ㄷ меняется на ㄹ: 걸어요." },
+      { sentence: "선생님의 설명을 잘 ____.", base: "듣다", meaning: "слушать", answer: "들어요", translation: "Я внимательно слушаю объяснение учителя.", explanation: "듣다 → перед гласным окончанием ㄷ меняется на ㄹ: 들어요." },
       { sentence: "친구에게 선물을 ____.", base: "주다", meaning: "давать", answer: "줘요", translation: "Я дарю другу подарок.", explanation: "주다 → 주 + 어요 сокращается до 줘요." },
       { sentence: "생일에 선물을 ____.", base: "받다", meaning: "получать", answer: "받아요", translation: "На день рождения я получаю подарок.", explanation: "받다 → гласная ㅏ, поэтому 받아요." },
       { sentence: "아이가 많이 ____.", base: "웃다", meaning: "смеяться, улыбаться", answer: "웃어요", translation: "Ребёнок много смеётся.", explanation: "웃다 → 웃어요." },
@@ -356,8 +369,8 @@
       { sentence: "저녁에 요리를 ____.", base: "하다", meaning: "делать", answer: "해요", translation: "Вечером я готовлю.", explanation: "하다 → 해요." },
       { sentence: "어머니가 김치찌개를 ____.", base: "끓이다", meaning: "варить", answer: "끓여요", translation: "Мама варит кимчиччигэ.", explanation: "끓이다 → 이 + 어요 сокращается до 여요: 끓여요." },
       { sentence: "저는 사과를 ____.", base: "씻다", meaning: "мыть", answer: "씻어요", translation: "Я мою яблоко.", explanation: "씻다 → 씻어요." },
-      { sentence: "빵을 칼로 ____.", base: "자르다", meaning: "резать", answer: "잘라요", translation: "Я режу хлеб ножом.", explanation: "자르다 — 르-неправильный глагол: 잘라요." },
-      { sentence: "컵에 물을 ____.", base: "따르다", meaning: "наливать", answer: "따라요", translation: "Я наливаю воду в чашку.", explanation: "따르다 — 르-неправильный глагол: 따라요." },
+      { sentence: "빵을 칼로 ____.", base: "자르다", meaning: "резать", answer: "잘라요", translation: "Я режу хлеб ножом.", explanation: "자르다 → при гласном окончании добавляется ㄹ к предыдущему слогу, 르 → 라: 잘라요." },
+      { sentence: "컵에 물을 ____.", base: "따르다", meaning: "наливать", answer: "따라요", translation: "Я наливаю воду в чашку.", explanation: "따르다 → при гласном окончании добавляется ㄹ к предыдущему слогу, 르 → 라: 따라요." },
       { sentence: "저는 사진을 많이 ____.", base: "찍다", meaning: "фотографировать", answer: "찍어요", translation: "Я делаю много фотографий.", explanation: "찍다 → 찍어요." },
       { sentence: "컴퓨터를 매일 ____.", base: "사용하다", meaning: "использовать", answer: "사용해요", translation: "Я каждый день пользуюсь компьютером.", explanation: "사용하다 → 사용해요." },
       { sentence: "휴대폰으로 메시지를 ____.", base: "보내다", meaning: "отправлять", answer: "보내요", translation: "Я отправляю сообщение с телефона.", explanation: "보내다 → 보내요." },
@@ -367,15 +380,15 @@
       { sentence: "오늘 기분이 ____.", base: "괜찮다", meaning: "быть нормальным", answer: "괜찮아요", translation: "Сегодня я нормально себя чувствую.", explanation: "괜찮다 → гласная ㅏ, поэтому 괜찮아요." },
       { sentence: "이 옷은 가격이 ____.", base: "싸다", meaning: "быть дешёвым", answer: "싸요", translation: "Эта одежда дешёвая.", explanation: "싸다 → 싸 + 아요 сокращается до 싸요." },
       { sentence: "이 가방은 너무 ____.", base: "비싸다", meaning: "быть дорогим", answer: "비싸요", translation: "Эта сумка слишком дорогая.", explanation: "비싸다 → 비싸요." },
-      { sentence: "우리 집은 학교에서 ____.", base: "가깝다", meaning: "быть близким", answer: "가까워요", translation: "Наш дом находится близко от школы.", explanation: "가깝다 — ㅂ-неправильное слово: 가까워요." },
+      { sentence: "우리 집은 학교에서 ____.", base: "가깝다", meaning: "быть близким", answer: "가까워요", translation: "Наш дом находится близко от школы.", explanation: "가깝다 → перед гласным окончанием ㅂ меняется на 우, затем -어요: 가까워요." },
       { sentence: "공항이 여기에서 ____.", base: "멀다", meaning: "быть далёким", answer: "멀어요", translation: "Аэропорт находится далеко отсюда.", explanation: "멀다 → 멀어요." },
       { sentence: "교실이 아주 ____.", base: "크다", meaning: "быть большим", answer: "커요", translation: "Класс очень большой.", explanation: "크다 → ㅡ выпадает, поэтому 커요." },
       { sentence: "이 신발은 조금 ____.", base: "작다", meaning: "быть маленьким", answer: "작아요", translation: "Эта обувь немного мала.", explanation: "작다 → гласная ㅏ, поэтому 작아요." },
       { sentence: "방이 정말 ____.", base: "깨끗하다", meaning: "быть чистым", answer: "깨끗해요", translation: "Комната действительно чистая.", explanation: "깨끗하다 → 깨끗해요." },
-      { sentence: "책상이 조금 ____.", base: "더럽다", meaning: "быть грязным", answer: "더러워요", translation: "Стол немного грязный.", explanation: "더럽다 — ㅂ-неправильное слово: 더러워요." },
+      { sentence: "책상이 조금 ____.", base: "더럽다", meaning: "быть грязным", answer: "더러워요", translation: "Стол немного грязный.", explanation: "더럽다 → перед гласным окончанием ㅂ меняется на 우, затем -어요: 더러워요." },
       { sentence: "오늘 사람이 아주 ____.", base: "많다", meaning: "быть многочисленным", answer: "많아요", translation: "Сегодня очень много людей.", explanation: "많다 → гласная ㅏ, поэтому 많아요." },
       { sentence: "냉장고에 음식이 ____.", base: "적다", meaning: "быть малочисленным", answer: "적어요", translation: "В холодильнике мало еды.", explanation: "적다 → 적어요." },
-      { sentence: "이 책이 저 책보다 ____.", base: "두껍다", meaning: "быть толстым", answer: "두꺼워요", translation: "Эта книга толще той.", explanation: "두껍다 — ㅂ-неправильное слово: 두꺼워요." },
+      { sentence: "이 책이 저 책보다 ____.", base: "두껍다", meaning: "быть толстым", answer: "두꺼워요", translation: "Эта книга толще той.", explanation: "두껍다 → перед гласным окончанием ㅂ меняется на 우, затем -어요: 두꺼워요." },
       { sentence: "종이가 아주 ____.", base: "얇다", meaning: "быть тонким", answer: "얇아요", translation: "Бумага очень тонкая.", explanation: "얇다 → гласная ㅏ, поэтому 얇아요." },
       { sentence: "겨울에는 해가 일찍 ____.", base: "지다", meaning: "заходить", answer: "져요", translation: "Зимой солнце садится рано.", explanation: "지다 → 지 + 어요 сокращается до 져요." },
       { sentence: "아침에 해가 ____.", base: "뜨다", meaning: "всходить", answer: "떠요", translation: "Утром солнце восходит.", explanation: "뜨다 → ㅡ выпадает, поэтому 떠요." },
@@ -398,7 +411,7 @@
       { sentence: "주말 계획을 ____.", base: "세우다", meaning: "составлять", answer: "세워요", translation: "Я составляю планы на выходные.", explanation: "세우다 → 우 + 어요 сокращается до 워요: 세워요." },
       { sentence: "여행을 정말 ____.", base: "기대하다", meaning: "ждать с нетерпением", answer: "기대해요", translation: "Я очень жду путешествия.", explanation: "기대하다 → 기대해요." },
       { sentence: "저는 가족을 자주 ____.", base: "도와주다", meaning: "помогать", answer: "도와줘요", translation: "Я часто помогаю семье.", explanation: "돕다 входит в 도와주다: 도와 + 주어요 → 도와줘요." },
-      { sentence: "할머니를 집까지 ____.", base: "돕다", meaning: "помогать", answer: "도와요", translation: "Я помогаю бабушке дойти до дома.", explanation: "돕다 — ㅂ-неправильный глагол с формой 와요: 도와요." },
+      { sentence: "할머니를 집까지 ____.", base: "돕다", meaning: "помогать", answer: "도와요", translation: "Я помогаю бабушке дойти до дома.", explanation: "돕다 → перед гласным окончанием ㅂ меняется на 오: 도와요." },
       { sentence: "저는 친구에게 돈을 ____.", base: "빌리다", meaning: "брать взаймы", answer: "빌려요", translation: "Я занимаю деньги у друга.", explanation: "빌리다 → 리 + 어요 сокращается до 려요: 빌려요." },
       { sentence: "친구에게 우산을 ____.", base: "빌려주다", meaning: "одалживать", answer: "빌려줘요", translation: "Я одалживаю другу зонт.", explanation: "빌리다 → 빌려, 주다 → 줘요: 빌려줘요." },
       { sentence: "시장에서 과일을 ____.", base: "사다", meaning: "покупать", answer: "사요", translation: "Я покупаю фрукты на рынке.", explanation: "사다 → 사 + 아요 сокращается до 사요." },
@@ -421,6 +434,7 @@
     var jsStatusEl = document.getElementById("jsStatus");
     var checkButtonEl = document.getElementById("checkButton");
     var nextButtonEl = document.getElementById("nextButton");
+    var translateButtonEl = document.getElementById("translateButton");
 
     var current = null;
     var lastIndex = -1;
@@ -430,6 +444,7 @@
     var firstTryCorrect = 0;
     var locked = false;
     var awaitingNext = false;
+    var mustRetype = false;
 
     function cleanText(text) {
       return String(text || "")
@@ -448,6 +463,12 @@
       feedbackEl.innerHTML = "";
       translationEl.className = "translation";
       translationEl.innerHTML = "";
+    }
+
+    function showTranslation() {
+      if (!current) return;
+      translationEl.innerHTML = current.translation;
+      translationEl.className = "translation show";
     }
 
     function showNextButton() {
@@ -475,6 +496,7 @@
       current = exercises[index];
       wrongAttempts = 0;
       locked = false;
+      mustRetype = false;
       hideNextButton();
 
       sentenceEl.innerHTML = current.sentence;
@@ -489,6 +511,7 @@
 
     function finishExercise() {
       locked = true;
+      mustRetype = false;
       hideNextButton();
       exerciseEl.style.display = "none";
       summaryEl.className = "summary show";
@@ -506,10 +529,27 @@
 
     function revealAndWait(type, html) {
       locked = true;
+      mustRetype = false;
       answerEl.disabled = true;
       checkButtonEl.disabled = true;
       setFeedback(type, html);
       showNextButton();
+    }
+
+    function startRetypePractice() {
+      mustRetype = true;
+      locked = false;
+      hideNextButton();
+      answerEl.disabled = false;
+      checkButtonEl.disabled = false;
+      answerEl.value = "";
+      setFeedback(
+        "bad",
+        "Правильный ответ: <strong>" + current.answer + "</strong><br>" +
+          current.explanation +
+          "<br>Введите этот ответ сами, чтобы продолжить."
+      );
+      try { answerEl.focus(); } catch (e) {}
     }
 
     function checkAnswer() {
@@ -524,7 +564,12 @@
       var command = raw.replace(/^\s+|\s+$/g, "").toLowerCase();
 
       if (!command) {
-        setFeedback("info", "Введите ответ, команду «перевод» или «stop».");
+        setFeedback(
+          "info",
+          mustRetype
+            ? "Введите правильный ответ, чтобы продолжить."
+            : "Введите ответ или команду «stop»."
+        );
         return false;
       }
 
@@ -534,10 +579,28 @@
       }
 
       if (command === "перевод" || command === "translation" || command === "translate") {
-        translationEl.innerHTML = current.translation;
-        translationEl.className = "translation show";
+        showTranslation();
         answerEl.value = "";
         try { answerEl.focus(); } catch (e) {}
+        return false;
+      }
+
+      if (mustRetype) {
+        if (cleanText(raw) === cleanText(current.answer)) {
+          revealAndWait(
+            "ok",
+            "Отлично! Вы ввели: <strong>" + current.answer + "</strong>"
+          );
+        } else {
+          setFeedback(
+            "bad",
+            "Нужно ввести: <strong>" + current.answer + "</strong><br>" +
+              current.explanation +
+              "<br>Введите этот ответ сами, чтобы продолжить."
+          );
+          answerEl.value = "";
+          try { answerEl.focus(); } catch (e) {}
+        }
         return false;
       }
 
@@ -562,10 +625,7 @@
       } else {
         totalQuestions += 1;
         updateScore();
-        revealAndWait(
-          "bad",
-          "Правильный ответ: <strong>" + current.answer + "</strong><br>" + current.explanation
-        );
+        startRetypePractice();
       }
 
       return false;
@@ -587,6 +647,11 @@
 
     checkButtonEl.onclick = function () {
       checkAnswer();
+      return false;
+    };
+
+    translateButtonEl.onclick = function () {
+      showTranslation();
       return false;
     };
 
@@ -613,6 +678,7 @@
       firstTryCorrect = 0;
       lastIndex = -1;
       locked = false;
+      mustRetype = false;
       hideNextButton();
       updateScore();
       summaryEl.className = "summary";
