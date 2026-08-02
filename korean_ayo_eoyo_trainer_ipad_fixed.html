@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#f6f3ff" />
+  <title>아요 / 어요 / 여요 — тренажёр</title>
+  <style>
+    :root {
+      --bg: #f6f3ff;
+      --card: #ffffff;
+      --text: #20202a;
+      --muted: #6e6b7b;
+      --accent: #7257d9;
+      --accent-dark: #5b42bf;
+      --ok: #19764b;
+      --ok-bg: #e9f8f0;
+      --bad: #b43a45;
+      --bad-bg: #fff0f1;
+      --info: #2f5ea8;
+      --info-bg: #edf4ff;
+      --border: #ded8f3;
+      --shadow: 0 16px 45px rgba(65, 49, 125, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "Noto Sans KR", Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, #ebe3ff 0, transparent 34%),
+        radial-gradient(circle at bottom right, #e4f5ff 0, transparent 30%),
+        var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .app {
+      width: min(760px, 100%);
+      margin: auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(22px, 5vw, 34px);
+      line-height: 1.1;
+    }
+
+    .score {
+      white-space: nowrap;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.82);
+      border-radius: 999px;
+      padding: 9px 13px;
+      font-weight: 700;
+      color: var(--accent-dark);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(114, 87, 217, 0.13);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: clamp(20px, 5vw, 34px);
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .sentence {
+      font-size: clamp(25px, 6vw, 39px);
+      line-height: 1.45;
+      word-break: keep-all;
+      margin: 8px 0 14px;
+      font-weight: 760;
+      letter-spacing: -0.02em;
+    }
+
+    .dictionary {
+      display: inline-block;
+      color: var(--accent-dark);
+      background: #f1edff;
+      border-radius: 12px;
+      padding: 8px 11px;
+      font-size: clamp(16px, 4vw, 20px);
+      margin-bottom: 22px;
+    }
+
+    #answerBox {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+    }
+
+    input {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      min-width: 0;
+      border: 2px solid var(--border);
+      border-radius: 15px;
+      padding: 15px 16px;
+      font: inherit;
+      font-size: 20px;
+      outline: none;
+      background: #fff;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(114, 87, 217, 0.12);
+    }
+
+    button {
+      -webkit-appearance: none;
+      appearance: none;
+      border: 0;
+      border-radius: 15px;
+      padding: 0 20px;
+      min-height: 56px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      color: #fff;
+      background: var(--accent);
+      transition: transform 0.08s ease, background 0.15s ease;
+    }
+
+    button:hover { background: var(--accent-dark); }
+    button:active { transform: translateY(1px); }
+
+    .feedback {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 15px;
+      line-height: 1.55;
+      font-size: 16px;
+    }
+
+    .feedback.show { display: block; }
+    .feedback.ok { color: var(--ok); background: var(--ok-bg); }
+    .feedback.bad { color: var(--bad); background: var(--bad-bg); }
+    .feedback.info { color: var(--info); background: var(--info-bg); }
+
+    .translation {
+      display: none;
+      margin-top: 12px;
+      color: var(--info);
+      background: var(--info-bg);
+      border-radius: 15px;
+      padding: 13px 16px;
+      line-height: 1.5;
+    }
+
+    .translation.show { display: block; }
+
+    .help {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .help code {
+      color: var(--accent-dark);
+      background: #f1edff;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .summary {
+      display: none;
+      text-align: center;
+      padding: 6px 0;
+    }
+
+    .summary.show { display: block; }
+
+    .summary .big {
+      font-size: clamp(46px, 12vw, 74px);
+      font-weight: 900;
+      color: var(--accent-dark);
+      margin: 14px 0 8px;
+    }
+
+    .summary p {
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.55;
+    }
+
+    .restart {
+      margin-top: 14px;
+      padding: 14px 22px;
+    }
+
+    @media (max-width: 520px) {
+      body { padding: 12px; }
+      .topbar { align-items: flex-start; }
+      .score { font-size: 13px; padding: 8px 10px; }
+      #answerBox { grid-template-columns: 1fr !important; }
+      button { width: 100%; }
+      .card { border-radius: 20px; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <div class="topbar">
+      <h1>아요 / 어요 / 여요</h1>
+      <div class="score" id="score">Правильно: 0 / 0</div>
+    </div>
+
+    <section class="card">
+      <div id="exercise">
+        <div class="label">Введите правильную вежливую форму настоящего времени</div>
+        <div id="jsStatus" style="margin-bottom:12px;font-size:13px;color:#b43a45;">JavaScript не запущен</div>
+        <div class="sentence" id="sentence">저는 서울에 ____.</div>
+        <div class="dictionary" id="dictionary">살다 — жить</div>
+        <noscript><div class="feedback show bad">Для этого упражнения необходимо открыть файл в браузере с поддержкой JavaScript.</div></noscript>
+
+        <div id="answerBox" style="display:grid;grid-template-columns:1fr auto;gap:10px;">
+          <input
+            id="answer"
+            type="text"
+            inputmode="text"
+            autocapitalize="off"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Например: 살아요"
+            aria-label="Ответ"
+          />
+          <button id="checkButton" type="button" onclick="checkAnswer()">Проверить</button>
+        </div>
+
+        <div class="translation" id="translation"></div>
+        <div class="feedback" id="feedback"></div>
+
+        <div class="help">
+          Команды: <code>перевод</code> — показать перевод, <code>stop</code> —
+          закончить упражнение и увидеть результат. Перевод не считается попыткой.
+        </div>
+      </div>
+
+      <div class="summary" id="summary">
+        <div class="label">Упражнение завершено</div>
+        <div class="big" id="finalScore">0 / 0</div>
+        <p id="finalDetails"></p>
+        <button class="restart" id="restart">Начать заново</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    var exercises = [
+      { sentence: "저는 서울에 ____.", base: "살다", meaning: "жить", answer: "살아요", translation: "Я живу в Сеуле.", explanation: "살다 → в последнем слоге основы есть ㅏ, поэтому добавляется -아요: 살아요." },
+      { sentence: "저는 매일 학교에 ____.", base: "가다", meaning: "идти, ходить", answer: "가요", translation: "Я каждый день хожу в школу.", explanation: "가다 → 가 + 아요 сокращается до 가요." },
+      { sentence: "오늘 날씨가 ____.", base: "좋다", meaning: "быть хорошим", answer: "좋아요", translation: "Сегодня хорошая погода.", explanation: "좋다 → гласная ㅗ, поэтому -아요: 좋아요." },
+      { sentence: "이 음식이 정말 ____.", base: "맛있다", meaning: "быть вкусным", answer: "맛있어요", translation: "Эта еда очень вкусная.", explanation: "맛있다 → последняя гласная основы ㅣ, поэтому -어요: 맛있어요." },
+      { sentence: "저는 아침에 커피를 ____.", base: "마시다", meaning: "пить", answer: "마셔요", translation: "Я пью кофе утром.", explanation: "마시다 → 시 + 어요 сокращается до 셔요: 마셔요." },
+      { sentence: "친구가 책을 ____.", base: "읽다", meaning: "читать", answer: "읽어요", translation: "Друг читает книгу.", explanation: "읽다 → последняя гласная ㅣ, поэтому -어요: 읽어요." },
+      { sentence: "저는 한국어를 ____.", base: "공부하다", meaning: "учить, изучать", answer: "공부해요", translation: "Я изучаю корейский язык.", explanation: "하다 обычно меняется на 해요: 공부해요." },
+      { sentence: "주말에 영화를 ____.", base: "보다", meaning: "смотреть", answer: "봐요", translation: "На выходных я смотрю фильм.", explanation: "보다 → 보 + 아요 сокращается до 봐요." },
+      { sentence: "저는 음악을 자주 ____.", base: "듣다", meaning: "слушать", answer: "들어요", translation: "Я часто слушаю музыку.", explanation: "듣다 — ㄷ-неправильный глагол: ㄷ меняется на ㄹ перед гласной: 들어요." },
+      { sentence: "이 가방은 아주 ____.", base: "무겁다", meaning: "быть тяжёлым", answer: "무거워요", translation: "Эта сумка очень тяжёлая.", explanation: "무겁다 — ㅂ-неправильное слово: ㅂ исчезает и добавляется 워요: 무거워요." },
+      { sentence: "이 방은 조금 ____.", base: "좁다", meaning: "быть узким", answer: "좁아요", translation: "Эта комната немного узкая.", explanation: "좁다 не относится к ㅂ-исключениям: 좁아요." },
+      { sentence: "오늘은 많이 ____.", base: "춥다", meaning: "быть холодным", answer: "추워요", translation: "Сегодня очень холодно.", explanation: "춥다 — ㅂ-неправильное слово: 추워요." },
+      { sentence: "여름에는 날씨가 ____.", base: "덥다", meaning: "быть жарким", answer: "더워요", translation: "Летом жаркая погода.", explanation: "덥다 — ㅂ-неправильное слово: 더워요." },
+      { sentence: "한국 음식은 조금 ____.", base: "맵다", meaning: "быть острым", answer: "매워요", translation: "Корейская еда немного острая.", explanation: "맵다 — ㅂ-неправильное слово: 매워요." },
+      { sentence: "저는 매일 일찍 ____.", base: "일어나다", meaning: "вставать", answer: "일어나요", translation: "Я каждый день рано встаю.", explanation: "일어나다 → последняя гласная ㅏ, поэтому -아요: 일어나요." },
+      { sentence: "밤 열한 시에 ____.", base: "자다", meaning: "спать", answer: "자요", translation: "Я ложусь спать в одиннадцать вечера.", explanation: "자다 → 자 + 아요 сокращается до 자요." },
+      { sentence: "아침에 빵을 ____.", base: "먹다", meaning: "есть", answer: "먹어요", translation: "Утром я ем хлеб.", explanation: "먹다 → последняя гласная ㅓ, поэтому -어요: 먹어요." },
+      { sentence: "저는 물을 많이 ____.", base: "마시다", meaning: "пить", answer: "마셔요", translation: "Я пью много воды.", explanation: "마시다 → 마시어요 → 마셔요." },
+      { sentence: "동생이 숙제를 ____.", base: "하다", meaning: "делать", answer: "해요", translation: "Младший брат или сестра делает домашнее задание.", explanation: "하다 → 해요." },
+      { sentence: "저는 회사에서 ____.", base: "일하다", meaning: "работать", answer: "일해요", translation: "Я работаю в компании.", explanation: "일하다 → 하다 меняется на 해요: 일해요." },
+      { sentence: "친구를 카페에서 ____.", base: "만나다", meaning: "встречать", answer: "만나요", translation: "Я встречаю друга в кафе.", explanation: "만나다 → 나 + 아요 сокращается до 나요: 만나요." },
+      { sentence: "버스를 ____.", base: "기다리다", meaning: "ждать", answer: "기다려요", translation: "Я жду автобус.", explanation: "기다리다 → 리 + 어요 сокращается до 려요: 기다려요." },
+      { sentence: "문을 ____.", base: "열다", meaning: "открывать", answer: "열어요", translation: "Я открываю дверь.", explanation: "열다 → 열어요. Здесь ㄹ сохраняется." },
+      { sentence: "창문을 ____.", base: "닫다", meaning: "закрывать", answer: "닫아요", translation: "Я закрываю окно.", explanation: "닫다 — правильный глагол, ㄷ не меняется: 닫아요." },
+      { sentence: "어머니가 저녁을 ____.", base: "만들다", meaning: "готовить, создавать", answer: "만들어요", translation: "Мама готовит ужин.", explanation: "만들다 → 만들어요. ㄹ сохраняется перед -어요." },
+      { sentence: "저는 편지를 ____.", base: "쓰다", meaning: "писать", answer: "써요", translation: "Я пишу письмо.", explanation: "쓰다 → ㅡ выпадает, добавляется -어요: 써요." },
+      { sentence: "모자를 ____.", base: "쓰다", meaning: "надевать на голову", answer: "써요", translation: "Я надеваю шапку.", explanation: "쓰다 → 써요." },
+      { sentence: "친구에게 사진을 ____.", base: "보내다", meaning: "отправлять", answer: "보내요", translation: "Я отправляю другу фотографию.", explanation: "보내다 → 보내 + 어요 сокращается до 보내요." },
+      { sentence: "선생님이 질문을 ____.", base: "물어보다", meaning: "спрашивать", answer: "물어봐요", translation: "Учитель задаёт вопрос.", explanation: "물어보다 → 보다 становится 봐요: 물어봐요." },
+      { sentence: "저는 그 사람을 잘 ____.", base: "알다", meaning: "знать", answer: "알아요", translation: "Я хорошо знаю этого человека.", explanation: "알다 → гласная ㅏ, поэтому 알아요." },
+      { sentence: "저는 그 단어를 ____.", base: "모르다", meaning: "не знать", answer: "몰라요", translation: "Я не знаю это слово.", explanation: "모르다 — 르-неправильное слово: добавляется ㄹ к предыдущему слогу, 르 → 라: 몰라요." },
+      { sentence: "노래를 같이 ____.", base: "부르다", meaning: "петь", answer: "불러요", translation: "Мы вместе поём песню.", explanation: "부르다 — 르-неправильный глагол: 불러요." },
+      { sentence: "기차가 아주 ____.", base: "빠르다", meaning: "быть быстрым", answer: "빨라요", translation: "Поезд очень быстрый.", explanation: "빠르다 — 르-неправильное слово: 빨라요." },
+      { sentence: "이 신발은 조금 ____.", base: "다르다", meaning: "отличаться", answer: "달라요", translation: "Эта обувь немного отличается.", explanation: "다르다 — 르-неправильное слово: 달라요." },
+      { sentence: "배가 많이 ____.", base: "고프다", meaning: "быть голодным", answer: "고파요", translation: "Я очень голоден.", explanation: "고프다 → ㅡ выпадает; предыдущая гласная ㅗ, поэтому -아요: 고파요." },
+      { sentence: "오늘 정말 ____.", base: "바쁘다", meaning: "быть занятым", answer: "바빠요", translation: "Сегодня я очень занят.", explanation: "바쁘다 → ㅡ выпадает; предыдущая гласная ㅏ, поэтому 바빠요." },
+      { sentence: "그 영화가 너무 ____.", base: "슬프다", meaning: "быть грустным", answer: "슬퍼요", translation: "Этот фильм очень грустный.", explanation: "슬프다 → ㅡ выпадает; предыдущая гласная не ㅏ/ㅗ, поэтому 슬퍼요." },
+      { sentence: "저는 지금 아주 ____.", base: "기쁘다", meaning: "быть радостным", answer: "기뻐요", translation: "Сейчас я очень рад.", explanation: "기쁘다 → ㅡ выпадает, поэтому 기뻐요." },
+      { sentence: "머리가 ____.", base: "아프다", meaning: "болеть", answer: "아파요", translation: "У меня болит голова.", explanation: "아프다 → ㅡ выпадает; предыдущая гласная ㅏ, поэтому 아파요." },
+      { sentence: "길이 잘 안 ____.", base: "보이다", meaning: "быть видимым", answer: "보여요", translation: "Дорогу плохо видно.", explanation: "보이다 → 이 + 어요 сокращается до 여요: 보여요." },
+      { sentence: "사진이 아주 ____.", base: "예쁘다", meaning: "быть красивым", answer: "예뻐요", translation: "Фотография очень красивая.", explanation: "예쁘다 → ㅡ выпадает, поэтому 예뻐요." },
+      { sentence: "이 문제는 너무 ____.", base: "어렵다", meaning: "быть трудным", answer: "어려워요", translation: "Эта задача очень трудная.", explanation: "어렵다 — ㅂ-неправильное слово: 어려워요." },
+      { sentence: "이 문제는 아주 ____.", base: "쉽다", meaning: "быть лёгким", answer: "쉬워요", translation: "Эта задача очень лёгкая.", explanation: "쉽다 — ㅂ-неправильное слово: 쉬워요." },
+      { sentence: "한국어 수업이 ____.", base: "재미있다", meaning: "быть интересным", answer: "재미있어요", translation: "Урок корейского интересный.", explanation: "재미있다 → последняя гласная ㅣ, поэтому 재미있어요." },
+      { sentence: "그 책은 별로 ____.", base: "재미없다", meaning: "быть неинтересным", answer: "재미없어요", translation: "Эта книга не очень интересная.", explanation: "재미없다 → последняя гласная ㅓ, поэтому 재미없어요." },
+      { sentence: "교실에 학생이 많이 ____.", base: "있다", meaning: "иметься, находиться", answer: "있어요", translation: "В классе много учеников.", explanation: "있다 → 있어요." },
+      { sentence: "오늘 수업이 ____.", base: "없다", meaning: "не иметься, отсутствовать", answer: "없어요", translation: "Сегодня нет занятия.", explanation: "없다 → 없어요." },
+      { sentence: "저는 고양이를 ____.", base: "좋아하다", meaning: "любить, нравиться", answer: "좋아해요", translation: "Я люблю кошек.", explanation: "좋아하다 → 하다 меняется на 해요: 좋아해요." },
+      { sentence: "동생은 채소를 ____.", base: "싫어하다", meaning: "не любить", answer: "싫어해요", translation: "Младший брат или сестра не любит овощи.", explanation: "싫어하다 → 하다 меняется на 해요: 싫어해요." },
+      { sentence: "저는 친구와 자주 ____.", base: "이야기하다", meaning: "разговаривать", answer: "이야기해요", translation: "Я часто разговариваю с другом.", explanation: "이야기하다 → 이야기해요." },
+      { sentence: "아버지가 신문을 ____.", base: "읽다", meaning: "читать", answer: "읽어요", translation: "Отец читает газету.", explanation: "읽다 → 읽어요." },
+      { sentence: "저는 매일 운동을 ____.", base: "하다", meaning: "делать", answer: "해요", translation: "Я каждый день занимаюсь спортом.", explanation: "하다 → 해요." },
+      { sentence: "공원에서 천천히 ____.", base: "걷다", meaning: "ходить пешком", answer: "걸어요", translation: "Я медленно гуляю в парке.", explanation: "걷다 — ㄷ-неправильный глагол: 걸어요." },
+      { sentence: "선생님의 설명을 잘 ____.", base: "듣다", meaning: "слушать", answer: "들어요", translation: "Я внимательно слушаю объяснение учителя.", explanation: "듣다 — ㄷ меняется на ㄹ: 들어요." },
+      { sentence: "친구에게 선물을 ____.", base: "주다", meaning: "давать", answer: "줘요", translation: "Я дарю другу подарок.", explanation: "주다 → 주 + 어요 сокращается до 줘요." },
+      { sentence: "생일에 선물을 ____.", base: "받다", meaning: "получать", answer: "받아요", translation: "На день рождения я получаю подарок.", explanation: "받다 → гласная ㅏ, поэтому 받아요." },
+      { sentence: "아이가 많이 ____.", base: "웃다", meaning: "смеяться, улыбаться", answer: "웃어요", translation: "Ребёнок много смеётся.", explanation: "웃다 → 웃어요." },
+      { sentence: "아기가 지금 ____.", base: "울다", meaning: "плакать", answer: "울어요", translation: "Ребёнок сейчас плачет.", explanation: "울다 → 울어요." },
+      { sentence: "저는 매일 샤워를 ____.", base: "하다", meaning: "делать", answer: "해요", translation: "Я каждый день принимаю душ.", explanation: "하다 → 해요." },
+      { sentence: "아침에 세수를 ____.", base: "하다", meaning: "делать", answer: "해요", translation: "Утром я умываюсь.", explanation: "하다 → 해요." },
+      { sentence: "저는 이를 ____.", base: "닦다", meaning: "чистить", answer: "닦아요", translation: "Я чищу зубы.", explanation: "닦다 → гласная ㅏ, поэтому 닦아요." },
+      { sentence: "저는 옷을 ____.", base: "입다", meaning: "надевать", answer: "입어요", translation: "Я надеваю одежду.", explanation: "입다 → последняя гласная ㅣ, поэтому 입어요." },
+      { sentence: "집에서 신발을 ____.", base: "벗다", meaning: "снимать", answer: "벗어요", translation: "Дома я снимаю обувь.", explanation: "벗다 → 벗어요." },
+      { sentence: "지하철을 ____.", base: "타다", meaning: "садиться, ехать на", answer: "타요", translation: "Я еду на метро.", explanation: "타다 → 타 + 아요 сокращается до 타요." },
+      { sentence: "다음 역에서 ____.", base: "내리다", meaning: "выходить", answer: "내려요", translation: "Я выхожу на следующей станции.", explanation: "내리다 → 리 + 어요 сокращается до 려요: 내려요." },
+      { sentence: "학교에 늦게 ____.", base: "오다", meaning: "приходить", answer: "와요", translation: "Я поздно прихожу в школу.", explanation: "오다 → 오 + 아요 сокращается до 와요." },
+      { sentence: "친구가 우리 집에 ____.", base: "오다", meaning: "приходить", answer: "와요", translation: "Друг приходит к нам домой.", explanation: "오다 → 와요." },
+      { sentence: "저는 집에 일찍 ____.", base: "돌아가다", meaning: "возвращаться", answer: "돌아가요", translation: "Я рано возвращаюсь домой.", explanation: "돌아가다 → 마지막 ㅏ, поэтому 돌아가요." },
+      { sentence: "주말에 방을 ____.", base: "청소하다", meaning: "убирать", answer: "청소해요", translation: "На выходных я убираю комнату.", explanation: "청소하다 → 청소해요." },
+      { sentence: "저녁에 요리를 ____.", base: "하다", meaning: "делать", answer: "해요", translation: "Вечером я готовлю.", explanation: "하다 → 해요." },
+      { sentence: "어머니가 김치찌개를 ____.", base: "끓이다", meaning: "варить", answer: "끓여요", translation: "Мама варит кимчиччигэ.", explanation: "끓이다 → 이 + 어요 сокращается до 여요: 끓여요." },
+      { sentence: "저는 사과를 ____.", base: "씻다", meaning: "мыть", answer: "씻어요", translation: "Я мою яблоко.", explanation: "씻다 → 씻어요." },
+      { sentence: "빵을 칼로 ____.", base: "자르다", meaning: "резать", answer: "잘라요", translation: "Я режу хлеб ножом.", explanation: "자르다 — 르-неправильный глагол: 잘라요." },
+      { sentence: "컵에 물을 ____.", base: "따르다", meaning: "наливать", answer: "따라요", translation: "Я наливаю воду в чашку.", explanation: "따르다 — 르-неправильный глагол: 따라요." },
+      { sentence: "저는 사진을 많이 ____.", base: "찍다", meaning: "фотографировать", answer: "찍어요", translation: "Я делаю много фотографий.", explanation: "찍다 → 찍어요." },
+      { sentence: "컴퓨터를 매일 ____.", base: "사용하다", meaning: "использовать", answer: "사용해요", translation: "Я каждый день пользуюсь компьютером.", explanation: "사용하다 → 사용해요." },
+      { sentence: "휴대폰으로 메시지를 ____.", base: "보내다", meaning: "отправлять", answer: "보내요", translation: "Я отправляю сообщение с телефона.", explanation: "보내다 → 보내요." },
+      { sentence: "친구에게 전화____.", base: "하다", meaning: "делать", answer: "해요", translation: "Я звоню другу.", explanation: "전화하다 → 전화해요; в пропуск нужно ввести 해요." },
+      { sentence: "저는 한국 드라마를 ____.", base: "보다", meaning: "смотреть", answer: "봐요", translation: "Я смотрю корейские дорамы.", explanation: "보다 → 봐요." },
+      { sentence: "주말에는 집에서 ____.", base: "쉬다", meaning: "отдыхать", answer: "쉬어요", translation: "На выходных я отдыхаю дома.", explanation: "쉬다 → 쉬어요. Сочетание 쉬어요 обычно не сокращается." },
+      { sentence: "오늘 기분이 ____.", base: "괜찮다", meaning: "быть нормальным", answer: "괜찮아요", translation: "Сегодня я нормально себя чувствую.", explanation: "괜찮다 → гласная ㅏ, поэтому 괜찮아요." },
+      { sentence: "이 옷은 가격이 ____.", base: "싸다", meaning: "быть дешёвым", answer: "싸요", translation: "Эта одежда дешёвая.", explanation: "싸다 → 싸 + 아요 сокращается до 싸요." },
+      { sentence: "이 가방은 너무 ____.", base: "비싸다", meaning: "быть дорогим", answer: "비싸요", translation: "Эта сумка слишком дорогая.", explanation: "비싸다 → 비싸요." },
+      { sentence: "우리 집은 학교에서 ____.", base: "가깝다", meaning: "быть близким", answer: "가까워요", translation: "Наш дом находится близко от школы.", explanation: "가깝다 — ㅂ-неправильное слово: 가까워요." },
+      { sentence: "공항이 여기에서 ____.", base: "멀다", meaning: "быть далёким", answer: "멀어요", translation: "Аэропорт находится далеко отсюда.", explanation: "멀다 → 멀어요." },
+      { sentence: "교실이 아주 ____.", base: "크다", meaning: "быть большим", answer: "커요", translation: "Класс очень большой.", explanation: "크다 → ㅡ выпадает, поэтому 커요." },
+      { sentence: "이 신발은 조금 ____.", base: "작다", meaning: "быть маленьким", answer: "작아요", translation: "Эта обувь немного мала.", explanation: "작다 → гласная ㅏ, поэтому 작아요." },
+      { sentence: "방이 정말 ____.", base: "깨끗하다", meaning: "быть чистым", answer: "깨끗해요", translation: "Комната действительно чистая.", explanation: "깨끗하다 → 깨끗해요." },
+      { sentence: "책상이 조금 ____.", base: "더럽다", meaning: "быть грязным", answer: "더러워요", translation: "Стол немного грязный.", explanation: "더럽다 — ㅂ-неправильное слово: 더러워요." },
+      { sentence: "오늘 사람이 아주 ____.", base: "많다", meaning: "быть многочисленным", answer: "많아요", translation: "Сегодня очень много людей.", explanation: "많다 → гласная ㅏ, поэтому 많아요." },
+      { sentence: "냉장고에 음식이 ____.", base: "적다", meaning: "быть малочисленным", answer: "적어요", translation: "В холодильнике мало еды.", explanation: "적다 → 적어요." },
+      { sentence: "이 책이 저 책보다 ____.", base: "두껍다", meaning: "быть толстым", answer: "두꺼워요", translation: "Эта книга толще той.", explanation: "두껍다 — ㅂ-неправильное слово: 두꺼워요." },
+      { sentence: "종이가 아주 ____.", base: "얇다", meaning: "быть тонким", answer: "얇아요", translation: "Бумага очень тонкая.", explanation: "얇다 → гласная ㅏ, поэтому 얇아요." },
+      { sentence: "겨울에는 해가 일찍 ____.", base: "지다", meaning: "заходить", answer: "져요", translation: "Зимой солнце садится рано.", explanation: "지다 → 지 + 어요 сокращается до 져요." },
+      { sentence: "아침에 해가 ____.", base: "뜨다", meaning: "всходить", answer: "떠요", translation: "Утром солнце восходит.", explanation: "뜨다 → ㅡ выпадает, поэтому 떠요." },
+      { sentence: "밖에 비가 ____.", base: "오다", meaning: "идти (об осадках)", answer: "와요", translation: "На улице идёт дождь.", explanation: "오다 → 와요." },
+      { sentence: "겨울에 눈이 자주 ____.", base: "오다", meaning: "идти (об осадках)", answer: "와요", translation: "Зимой часто идёт снег.", explanation: "오다 → 와요." },
+      { sentence: "바람이 많이 ____.", base: "불다", meaning: "дуть", answer: "불어요", translation: "Сильно дует ветер.", explanation: "불다 → 불어요." },
+      { sentence: "봄에는 꽃이 ____.", base: "피다", meaning: "цвести", answer: "펴요", translation: "Весной цветут цветы.", explanation: "피다 → 피 + 어요 сокращается до 펴요." },
+      { sentence: "가을에는 나뭇잎이 ____.", base: "떨어지다", meaning: "падать", answer: "떨어져요", translation: "Осенью опадают листья.", explanation: "떨어지다 → 지 + 어요 сокращается до 져요: 떨어져요." },
+      { sentence: "저는 매일 단어를 ____.", base: "외우다", meaning: "заучивать", answer: "외워요", translation: "Я каждый день учу слова.", explanation: "외우다 → 우 + 어요 сокращается до 워요: 외워요." },
+      { sentence: "수업에서 문법을 ____.", base: "배우다", meaning: "учить, изучать", answer: "배워요", translation: "На уроке я изучаю грамматику.", explanation: "배우다 → 우 + 어요 сокращается до 워요: 배워요." },
+      { sentence: "선생님이 한국어를 ____.", base: "가르치다", meaning: "преподавать", answer: "가르쳐요", translation: "Учитель преподаёт корейский.", explanation: "가르치다 → 치 + 어요 сокращается до 쳐요: 가르쳐요." },
+      { sentence: "질문에 한국어로 ____.", base: "대답하다", meaning: "отвечать", answer: "대답해요", translation: "Я отвечаю на вопрос по-корейски.", explanation: "대답하다 → 대답해요." },
+      { sentence: "모르는 단어를 사전에서 ____.", base: "찾다", meaning: "искать", answer: "찾아요", translation: "Я ищу незнакомое слово в словаре.", explanation: "찾다 → гласная ㅏ, поэтому 찾아요." },
+      { sentence: "그 말의 뜻을 ____.", base: "이해하다", meaning: "понимать", answer: "이해해요", translation: "Я понимаю значение этих слов.", explanation: "이해하다 → 이해해요." },
+      { sentence: "저는 그 약속을 ____.", base: "기억하다", meaning: "помнить", answer: "기억해요", translation: "Я помню это обещание.", explanation: "기억하다 → 기억해요." },
+      { sentence: "가끔 이름을 ____.", base: "잊다", meaning: "забывать", answer: "잊어요", translation: "Иногда я забываю имена.", explanation: "잊다 → 잊어요." },
+      { sentence: "수업이 아홉 시에 ____.", base: "시작하다", meaning: "начинаться", answer: "시작해요", translation: "Урок начинается в девять.", explanation: "시작하다 → 시작해요." },
+      { sentence: "수업이 열 시에 ____.", base: "끝나다", meaning: "заканчиваться", answer: "끝나요", translation: "Урок заканчивается в десять.", explanation: "끝나다 → 나 + 아요 сокращается до 나요: 끝나요." },
+      { sentence: "친구와 약속을 ____.", base: "정하다", meaning: "назначать, определять", answer: "정해요", translation: "Я договариваюсь о встрече с другом.", explanation: "정하다 → 정해요." },
+      { sentence: "주말 계획을 ____.", base: "세우다", meaning: "составлять", answer: "세워요", translation: "Я составляю планы на выходные.", explanation: "세우다 → 우 + 어요 сокращается до 워요: 세워요." },
+      { sentence: "여행을 정말 ____.", base: "기대하다", meaning: "ждать с нетерпением", answer: "기대해요", translation: "Я очень жду путешествия.", explanation: "기대하다 → 기대해요." },
+      { sentence: "저는 가족을 자주 ____.", base: "도와주다", meaning: "помогать", answer: "도와줘요", translation: "Я часто помогаю семье.", explanation: "돕다 входит в 도와주다: 도와 + 주어요 → 도와줘요." },
+      { sentence: "할머니를 집까지 ____.", base: "돕다", meaning: "помогать", answer: "도와요", translation: "Я помогаю бабушке дойти до дома.", explanation: "돕다 — ㅂ-неправильный глагол с формой 와요: 도와요." },
+      { sentence: "저는 친구에게 돈을 ____.", base: "빌리다", meaning: "брать взаймы", answer: "빌려요", translation: "Я занимаю деньги у друга.", explanation: "빌리다 → 리 + 어요 сокращается до 려요: 빌려요." },
+      { sentence: "친구에게 우산을 ____.", base: "빌려주다", meaning: "одалживать", answer: "빌려줘요", translation: "Я одалживаю другу зонт.", explanation: "빌리다 → 빌려, 주다 → 줘요: 빌려줘요." }
+    ];
+
+
+    var sentenceEl = document.getElementById("sentence");
+    var dictionaryEl = document.getElementById("dictionary");
+    var answerEl = document.getElementById("answer");
+    var feedbackEl = document.getElementById("feedback");
+    var translationEl = document.getElementById("translation");
+    var scoreEl = document.getElementById("score");
+    var exerciseEl = document.getElementById("exercise");
+    var summaryEl = document.getElementById("summary");
+    var finalScoreEl = document.getElementById("finalScore");
+    var finalDetailsEl = document.getElementById("finalDetails");
+    var restartEl = document.getElementById("restart");
+    var jsStatusEl = document.getElementById("jsStatus");
+    var checkButtonEl = document.getElementById("checkButton");
+
+    var current = null;
+    var lastIndex = -1;
+    var wrongAttempts = 0;
+    var totalQuestions = 0;
+    var correctQuestions = 0;
+    var firstTryCorrect = 0;
+    var locked = false;
+
+    function cleanText(text) {
+      return String(text || "")
+        .replace(/^\s+|\s+$/g, "")
+        .replace(/[.!?,。！？\s]+$/g, "")
+        .replace(/\s+/g, "");
+    }
+
+    function setFeedback(type, html) {
+      feedbackEl.className = "feedback show " + type;
+      feedbackEl.innerHTML = html;
+    }
+
+    function hideMessages() {
+      feedbackEl.className = "feedback";
+      feedbackEl.innerHTML = "";
+      translationEl.className = "translation";
+      translationEl.innerHTML = "";
+    }
+
+    function updateScore() {
+      scoreEl.innerHTML = "Правильно: " + correctQuestions + " / " + totalQuestions;
+    }
+
+    function chooseExercise() {
+      var index;
+      do {
+        index = Math.floor(Math.random() * exercises.length);
+      } while (exercises.length > 1 && index === lastIndex);
+
+      lastIndex = index;
+      current = exercises[index];
+      wrongAttempts = 0;
+      locked = false;
+
+      sentenceEl.innerHTML = current.sentence;
+      dictionaryEl.innerHTML = current.base + " — " + current.meaning;
+      answerEl.value = "";
+      answerEl.disabled = false;
+      checkButtonEl.disabled = false;
+      hideMessages();
+
+      try { answerEl.focus(); } catch (e) {}
+    }
+
+    function finishExercise() {
+      locked = true;
+      exerciseEl.style.display = "none";
+      summaryEl.className = "summary show";
+      finalScoreEl.innerHTML = correctQuestions + " / " + totalQuestions;
+
+      var accuracy = totalQuestions
+        ? Math.round((correctQuestions / totalQuestions) * 100)
+        : 0;
+
+      finalDetailsEl.innerHTML =
+        "Правильных ответов: <strong>" + correctQuestions + "</strong> из <strong>" +
+        totalQuestions + "</strong> (" + accuracy + "%).<br>" +
+        "С первой попытки: <strong>" + firstTryCorrect + "</strong>.";
+    }
+
+    function unlockAndNext(delay) {
+      window.setTimeout(function () {
+        chooseExercise();
+      }, delay);
+    }
+
+    function checkAnswer() {
+      if (locked || !current) return false;
+
+      var raw = answerEl.value || "";
+      var command = raw.replace(/^\s+|\s+$/g, "").toLowerCase();
+
+      if (!command) {
+        setFeedback("info", "Введите ответ, команду «перевод» или «stop».");
+        return false;
+      }
+
+      if (command === "stop" || command === "стоп") {
+        finishExercise();
+        return false;
+      }
+
+      if (command === "перевод" || command === "translation" || command === "translate") {
+        translationEl.innerHTML = current.translation;
+        translationEl.className = "translation show";
+        answerEl.value = "";
+        try { answerEl.focus(); } catch (e) {}
+        return false;
+      }
+
+      if (cleanText(raw) === cleanText(current.answer)) {
+        totalQuestions += 1;
+        correctQuestions += 1;
+        if (wrongAttempts === 0) firstTryCorrect += 1;
+        updateScore();
+        setFeedback("ok", "Верно: <strong>" + current.answer + "</strong>");
+        locked = true;
+        answerEl.disabled = true;
+        checkButtonEl.disabled = true;
+        unlockAndNext(700);
+        return false;
+      }
+
+      wrongAttempts += 1;
+
+      if (wrongAttempts === 1) {
+        setFeedback("bad", "Ошибка. Попробуйте ещё раз.");
+        answerEl.value = "";
+        try { answerEl.focus(); } catch (e) {}
+      } else {
+        totalQuestions += 1;
+        updateScore();
+        setFeedback(
+          "bad",
+          "Правильный ответ: <strong>" + current.answer + "</strong><br>" + current.explanation
+        );
+        locked = true;
+        answerEl.disabled = true;
+        checkButtonEl.disabled = true;
+        unlockAndNext(1800);
+      }
+
+      return false;
+    }
+
+    window.checkAnswer = checkAnswer;
+
+    answerEl.onkeydown = function (event) {
+      event = event || window.event;
+      var key = event.key || event.keyCode;
+
+      if (key === "Enter" || key === 13) {
+        if (event.preventDefault) event.preventDefault();
+        event.returnValue = false;
+        checkAnswer();
+        return false;
+      }
+    };
+
+    checkButtonEl.onclick = function () {
+      checkAnswer();
+      return false;
+    };
+
+    restartEl.onclick = function () {
+      totalQuestions = 0;
+      correctQuestions = 0;
+      firstTryCorrect = 0;
+      lastIndex = -1;
+      locked = false;
+      updateScore();
+      summaryEl.className = "summary";
+      exerciseEl.style.display = "block";
+      chooseExercise();
+      return false;
+    };
+
+    try {
+      jsStatusEl.innerHTML = "JavaScript работает";
+      jsStatusEl.style.color = "#19764b";
+      updateScore();
+      chooseExercise();
+    } catch (error) {
+      jsStatusEl.innerHTML = "Ошибка JavaScript";
+      jsStatusEl.style.color = "#b43a45";
+      setFeedback(
+        "bad",
+        "Ошибка запуска: " + (error && error.message ? error.message : String(error))
+      );
+    }
+</script>
+</body>
+</html>
